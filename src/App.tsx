@@ -12,13 +12,12 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { CheckSquare } from 'lucide-react';
 import { TodoItem } from './components/TodoItem';
 import { TodoForm } from './components/TodoForm';
 import { TodoFilters } from './components/TodoFilters';
 import { useTodoStore } from './store/todoStore';
 import { Todo } from './types/todo';
-import { ThemeToggle } from './components/ThemeToggle';
+import { Layout } from './components/Layout/Layout';
 
 function App() {
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
@@ -32,14 +31,6 @@ function App() {
     })
   );
 
-  const handleDragEnd = (event: { active: { id: string }, over: { id: string } }) => {
-    const { active, over } = event;
-    if (active.id !== over.id) {
-      const oldIndex = todos.findIndex((todo) => todo.id === active.id);
-      const newIndex = todos.findIndex((todo) => todo.id === over.id);
-      reorderTodos(oldIndex, newIndex);
-    }
-  };
 
   const filteredTodos = todos
     .filter((todo) => {
@@ -63,17 +54,12 @@ function App() {
     });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-yellow-50 py-8 px-4">
-      <div className="max-w-4xl mx-auto space-y-8">
-        <header className="text-center">
-          <div className="flex items-center justify-center gap-2 text-4xl font-bold text-blue-600">
-            <CheckSquare className="w-10 h-10" />
-            <h1>TaskMaster</h1>
-          </div>
-          <p className="mt-2 text-gray-600">Organize your life, one task at a time</p>
-        </header>
-
-        <ThemeToggle />
+    <Layout>
+      <div className="space-y-8">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">My Tasks</h2>
+          <p className="mt-2 text-gray-600 dark:text-gray-400">Organize your life, one task at a time</p>
+        </div>
 
         <TodoForm
           onSubmit={(data) => {
@@ -96,7 +82,9 @@ function App() {
           onDragEnd={(event) => {
             const { active, over } = event;
             if (over && active.id !== over.id) {
-              handleDragEnd({ active: { id: String(active.id) }, over: { id: String(over.id) } });
+              const oldIndex = todos.findIndex((todo) => todo.id === active.id);
+              const newIndex = todos.findIndex((todo) => todo.id === over.id);
+              reorderTodos(oldIndex, newIndex);
             }
           }}
         >
@@ -120,12 +108,8 @@ function App() {
             No tasks found. Add some tasks to get started!
           </div>
         )}
-
-        <footer className="text-center pt-8 text-gray-500 text-sm">
-          Designed by Co.msadeq
-        </footer>
       </div>
-    </div>
+    </Layout>
   );
 }
 
