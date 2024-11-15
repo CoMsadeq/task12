@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -8,7 +8,6 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import {
-  arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
@@ -19,6 +18,7 @@ import { TodoForm } from './components/TodoForm';
 import { TodoFilters } from './components/TodoFilters';
 import { useTodoStore } from './store/todoStore';
 import { Todo } from './types/todo';
+import { ThemeToggle } from './components/ThemeToggle';
 
 function App() {
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
@@ -32,7 +32,7 @@ function App() {
     })
   );
 
-  const handleDragEnd = (event: any) => {
+  const handleDragEnd = (event: { active: { id: string }, over: { id: string } }) => {
     const { active, over } = event;
     if (active.id !== over.id) {
       const oldIndex = todos.findIndex((todo) => todo.id === active.id);
@@ -73,6 +73,8 @@ function App() {
           <p className="mt-2 text-gray-600">Organize your life, one task at a time</p>
         </header>
 
+        <ThemeToggle />
+
         <TodoForm
           onSubmit={(data) => {
             if (editingTodo) {
@@ -91,7 +93,12 @@ function App() {
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
+          onDragEnd={(event) => {
+            const { active, over } = event;
+            if (over && active.id !== over.id) {
+              handleDragEnd({ active: { id: String(active.id) }, over: { id: String(over.id) } });
+            }
+          }}
         >
           <SortableContext items={todos} strategy={verticalListSortingStrategy}>
             <div className="space-y-2">

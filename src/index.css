@@ -17,3 +17,25 @@
     @apply bg-primary-500 text-white hover:bg-primary-600 focus:ring-2 focus:ring-primary-200;
   }
 }
+
+:root {
+  /* Light tema değişkenleri */
+  --background-light: #ffffff;
+  --text-light: #333333;
+  
+  /* Dark tema değişkenleri */
+  --background-dark: #1a1a1a;
+  --text-dark: #ffffff;
+}
+
+.theme-light {
+  background-color: var(--background-light);
+  color: var(--text-light);
+  min-height: 100vh;
+}
+
+.theme-dark {
+  background-color: var(--background-dark);
+  color: var(--text-dark);
+  min-height: 100vh;
+}
